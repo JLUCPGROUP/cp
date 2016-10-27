@@ -31,6 +31,8 @@ public:
 	virtual ~BitModel();
 	unsigned** BitDoms;
 	unsigned** BitCons;
+
+
 };
 
 class AC3bit :
