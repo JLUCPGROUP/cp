@@ -33,6 +33,10 @@ int main()
 	int time = end - begin;
 	cout << "execute time = " << time << endl;
 
+
+
+
+
 	delete mac;
 	delete nt;
 
