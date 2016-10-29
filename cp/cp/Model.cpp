@@ -27,6 +27,7 @@ IntVar::IntVar(const int id, const int * values, const int size) :
 	prev_[0] = Limits::INDEX_OVERFLOW;
 	tail_ = size_ - 1;
 	lmt_ = vals_[size_ - 1];
+	b_ = new bitPre(size_);
 }
 
 IntVar::~IntVar()
@@ -36,13 +37,13 @@ IntVar::~IntVar()
 	delete[] next_;
 	delete[] prev_;
 	delete[] prev_absent_;
+	delete bpresent();
 
 	vals_ = NULL;
 	absent_ = NULL;
 	next_ = NULL;
 	prev_ = NULL;
 	prev_absent_ = NULL;
-
 }
 
 void IntVar::RemoveValue(const int a, const int p)
@@ -54,6 +55,8 @@ void IntVar::RemoveValue(const int a, const int p)
 
 	(prev_[a] == Limits::INDEX_OVERFLOW) ? head_ = next_[a] : next_[prev_[a]] = next_[a];
 	(next_[a] == Limits::INDEX_OVERFLOW) ? tail_ = prev_[a] : prev_[next_[a]] = prev_[a];
+
+	bpresent()->RemoveValue(a);
 }
 
 void IntVar::ReduceTo(const int a, const int p)
@@ -76,6 +79,8 @@ void IntVar::AddValue(const int a)
 
 	(prev_[a] == Limits::INDEX_OVERFLOW) ? head_ = a : next_[prev_[a]] = a;
 	(next_[a] == Limits::INDEX_OVERFLOW) ? tail_ = a : prev_[next_[a]] = a;
+
+	bpresent()->AddValue(a);
 }
 
 void IntVar::RestoreUpTo(const int p)
@@ -198,13 +203,30 @@ bool Tabular::sat(IntTuple &t)
 	//	for (int i = 0; i < arity_; ++i)
 	//		if (ts_[j][i] != scope_[i]->value[t[i]])
 	//			break;
-	return ts_.have(t);
+	return tuples().have(t);
+}
+
+Network::~Network()
+{
+	for (int i = 0; i < vars_.size(); ++i)
+	{
+		delete vars_[i];
+		vars_[i] = NULL;
+	}
+	for (int i = 0; i < cons_.size(); ++i)
+	{
+		delete (Tabular*)cons_[i];
+		cons_[i] = NULL;
+	}
 }
 
 void Network::MakeVar(const int id, const int * values, const int size)
 {
 	IntVar* v = new IntVar(id, values, size);
 	vars_.push_back(v);
+
+	if (max_dom_size() < size)
+		max_dom_size(size);
 }
 
 void Network::MakeTab(const int id, const std::vector<IntVar *>& scope, int** ts, const int len)
@@ -216,19 +238,39 @@ void Network::MakeTab(const int id, const std::vector<IntVar *>& scope, int** ts
 		v->subscribe(tb);
 }
 
-void Network::GetFirstValidTuple(IntConVar & c_val, IntTuple& t)
+void Network::GetFirstValidTuple(IntConVal & c_val, IntTuple& t)
 {
 	IntVal v_a(c_val.v(), c_val.a());
 	c_val.c()->GetFirstValidTuple(v_a, t);
 }
 
-void Network::GetNextValidTuple(IntConVar & c_val, IntTuple& t)
+void Network::GetNextValidTuple(IntConVal & c_val, IntTuple& t)
 {
 	IntVal v_a(c_val.v(), c_val.a());
 	c_val.c()->GetNextValidTuple(v_a, t);
 }
 
-const IntConVar& IntConVar::operator=(const IntConVar& rhs)
+const int Network::GetIntConValIndex(IntConVal & c_val)
+{
+	return  c_val.c()->id() * ma_ * mds_ + c_val.c()->index(c_val.v()) * mds_ + c_val.a();
+}
+
+const int Network::GetIntConValIndex(const int c_id, const int v_id, const int a)
+{
+	const Constraint* c = cons_[c_id];
+	return c_id * ma_ * mds_ + c->index(v_id) * mds_ + a;
+}
+
+IntConVal Network::GetIntConVal(int index)
+{
+	const int c_id = index / cons_.size();
+	const int v_id = index % cons_.size() / mds_;
+	const int a = index % cons_.size() % mds_;
+	IntConVal c(cons_[c_id], cons_[c_id]->scope()[v_id], a);
+	return c;
+}
+
+const IntConVal& IntConVal::operator=(const IntConVal& rhs)
 {
 	c_ = rhs.c_;
 	v_ = rhs.v_;
@@ -249,6 +291,36 @@ const IntVal & IntVal::operator=(const IntVal & rhs)
 	a_ = rhs.a_;
 
 	return *this;
+}
+
+bitPre::bitPre(const int size)
+{
+	//	生成bitDom
+	bitDom_len = GetTopNum(size, U64_BIT_SIZE);
+	bitDom = new u64[bitDom_len];
+
+	//	赋初值
+	for (int i = 0; i < bitDom_len; ++i)
+		bitDom[i] = ULLONG_MAX;
+
+	//	修改最后一个word
+	bitDom[bitDom_len - 1] <<= U64_BIT_SIZE - (size%U64_BIT_SIZE);
+}
+
+bitPre::~bitPre()
+{
+	delete[] bitDom;
+	bitDom = NULL;
+}
+
+void bitPre::RemoveValue(const int a)
+{
+	bitDom[a / U64_BIT_SIZE] &= MASK0_64[a%U64_BIT_SIZE];
+}
+
+void bitPre::AddValue(const int a)
+{
+	bitDom[a / U64_BIT_SIZE] |= MASK1_64[a%U64_BIT_SIZE];
 }
 
 }/*namespace cp*/

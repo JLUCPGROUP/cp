@@ -24,6 +24,7 @@
   <ItemGroup>
     <Xml Include="BMPath.xml" />
     <Xml Include="queens-12_ext.xml" />
+    <Xml Include="queens-4_ext.xml" />
     <Xml Include="XMLFile.xml" />
     <Xml Include="XMLFileNeg.xml" />
   </ItemGroup>
@@ -111,10 +112,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)XmlModel;$(SolutionDir)Xercesc\include;$(SolutionDir)cp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)Xercesc\lib\;$(SolutionDir)$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>xerces-c_3.lib;cp.lib;XmlModel.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

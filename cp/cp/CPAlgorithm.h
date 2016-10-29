@@ -100,6 +100,7 @@ public:
 	virtual ~arc_que();
 
 	void MakeQue(const size_t cons_size, const size_t max_arity);
+	void DeleteQue();
 	bool empty() const;
 	bool full() const;
 	bool push(arc& ele) throw(std::bad_exception);

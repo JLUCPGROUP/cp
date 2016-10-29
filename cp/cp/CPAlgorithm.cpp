@@ -89,11 +89,7 @@ arc_que::arc_que(const int cons_size, const int max_arity) :
 
 arc_que::~arc_que()
 {
-	delete[] m_data_;
-	delete[] vid_set_;
-	m_data_ = NULL;
-	vid_set_ = NULL;
-	arity_ = 0;
+	DeleteQue();
 }
 
 void arc_que::MakeQue(const size_t cons_size, const size_t max_arity)
@@ -105,6 +101,15 @@ void arc_que::MakeQue(const size_t cons_size, const size_t max_arity)
 
 	m_data_ = new arc[m_size_];
 	vid_set_ = new int[m_size_]();
+}
+
+void arc_que::DeleteQue()
+{
+	delete[] m_data_;
+	delete[] vid_set_;
+	m_data_ = NULL;
+	vid_set_ = NULL;
+	arity_ = 0;
 }
 
 bool arc_que::empty() const
@@ -306,6 +311,8 @@ T VarList<T>::pop_front()
 	nodes_[head_].absent = Limits::ABSENT;
 	head_ = nodes_[head_].next;
 	nodes_[head_].prev = Limits::INDEX_OVERFLOW;
+
+	return t;
 }
 
 template<class T>

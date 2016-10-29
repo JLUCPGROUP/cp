@@ -11,6 +11,11 @@ AC3::AC3(Network *nt) :
 }
 
 
+AC3::~AC3()
+{
+	Q.DeleteQue();
+}
+
 bool AC3::EnforceGAC_arc(VarEvt* x_evt, const int level)
 {
 	lvl(level);
@@ -56,7 +61,7 @@ bool AC3::revise(arc & c_x)
 
 	while (a != Limits::INDEX_OVERFLOW)
 	{
-		if (!seek_support(IntConVar(c_x, a)))
+		if (!seek_support(IntConVal(c_x, a)))
 		{
 			c_x.v()->RemoveValue(a, lvl_);
 			//std::cout << "(" << c_x.v_id() << ", " << a << ")" << std::endl;
@@ -68,7 +73,7 @@ bool AC3::revise(arc & c_x)
 	return num_elements != c_x.v()->size();
 }
 
-bool AC3::seek_support(IntConVar & c_val)
+bool AC3::seek_support(IntConVal & c_val)
 {
 	nt_->GetFirstValidTuple(c_val, cur_tp_);
 

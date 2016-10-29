@@ -25,16 +25,18 @@ int main()
 	builder.GenerateModelFromXml(xml_model);
 	Network* nt = new Network();
 	BuildModel(xml_model, nt);
+	DestroyEXTModel(xml_model);
+
 	MAC* mac = new MAC(nt, AC_3);
-	begin = clock_t();
+	begin = clock();
 	mac->enforce();
-	end = clock_t();
+	end = clock();
 	cout << "solutions = " << mac->sol_count() << endl;
-	int time = end - begin;
-	cout << "execute time = " << time << endl;
+	cout << "execute time = " << end - begin << endl;
 
 	delete mac;
 	delete nt;
-
+	mac = NULL;
+	nt = NULL;
 	return 0;
 }

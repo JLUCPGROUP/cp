@@ -24,5 +24,6 @@
     <Xml Include="queens-12_ext.xml" />
     <Xml Include="XMLFile.xml" />
     <Xml Include="XMLFileNeg.xml" />
+    <Xml Include="queens-4_ext.xml" />
   </ItemGroup>
 </Project>

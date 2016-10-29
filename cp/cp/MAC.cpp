@@ -14,6 +14,8 @@ MAC::MAC(Network * nt, ACAlgorithm ac_algzm) :
 	case AC_3:
 		ac_ = new AC3(nt_);
 		break;
+	case AC3_bit:
+		ac_ = new AC3bit(nt_);
 	default:
 		break;
 	}
@@ -38,7 +40,7 @@ void MAC::enforce()
 
 		if (consistent_&&I->full())
 		{
-			std::cout << I << std::endl;
+			//std::cout << I << std::endl;
 			++sol_count_;
 			consistent_ = false;
 		}
