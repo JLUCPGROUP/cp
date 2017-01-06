@@ -16,9 +16,9 @@ protected:
 	//pro_que<T> q;
 	virtual bool revise(arc& c_x);
 	virtual bool seek_support(IntConVal& c_val);
+	IntTuple cur_tp_;
 private:
 	void inital_Q_arc();
-	IntTuple cur_tp_;
 };
 
 }

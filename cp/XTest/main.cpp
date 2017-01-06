@@ -26,17 +26,25 @@ int main()
 	Network* nt = new Network();
 	BuildModel(xml_model, nt);
 	DestroyEXTModel(xml_model);
-
-	MAC* mac = new MAC(nt, AC_3);
+	//AC3* ac = new AC3(nt);
+	//VarEvt* x_evt_ = new VarEvt(nt);
+	//AC3rm* ac = new AC3rm(nt);
+	//ac->EnforceGAC_arc(x_evt_);
+	//MAC* mac = new MAC(nt, AC_3);
+	MAC* mac = new MAC(nt, AC_3bit);
+	//MAC* mac = new MAC(nt, AC_3rm);
 	begin = clock();
 	mac->enforce();
 	end = clock();
 	cout << "solutions = " << mac->sol_count() << endl;
 	cout << "execute time = " << end - begin << endl;
-
+	//delete x_evt_;
+	//delete ac;
 	delete mac;
 	delete nt;
 	mac = NULL;
+	//x_evt_ = NULL;
+	//ac = NULL;
 	nt = NULL;
 	return 0;
 }

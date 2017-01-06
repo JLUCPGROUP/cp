@@ -3,6 +3,7 @@
 #include "CPAlgorithm.h"
 #include "AC3.h"
 #include "AC3bit.h"
+#include "AC3rm.h"
 namespace cp
 {
 

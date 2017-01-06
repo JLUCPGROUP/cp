@@ -27,6 +27,12 @@ typedef unsigned int u32;
 using namespace std;
 
 namespace cp {
+
+/**
+* \brief Max number
+*/
+#define MAX(x,y) (x)>(y)?(x):(y)
+
 namespace model {
 
 const int MAX_VALUE = INT_MAX - 4096;
@@ -133,10 +139,7 @@ enum OpType {
 	OT_PAR = 0, OT__SIG_OP = 1, OT_BI_OP = 2,
 };
 
-/**
-* \brief Max number
-*/
-#define MAX(x,y) (x)>(y)?(x):(y)
+
 
 /**
 * \brief Get the max number of blocks

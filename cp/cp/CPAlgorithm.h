@@ -31,8 +31,9 @@ namespace cp
 //	std::vector<unsigned> sig_;
 //};
 
-enum ACAlgorithm {
-	AC_1, AC_2, AC_3, AC_4, AC_6, AC_7, AC_2001, AC3_bit, AC_3rm, STR_1, STR_2, STR_3
+enum ACAlgorithm
+{
+	AC_1, AC_2, AC_3, AC_4, AC_6, AC_7, AC_2001, AC_3bit, AC_3rm, STR_1, STR_2, STR_3
 };
 
 class VarEvt

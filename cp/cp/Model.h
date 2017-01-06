@@ -227,6 +227,7 @@ public:
 	IntTuple(const size_t size) :arity_(size), cur_size_(size)
 	{
 		tuple_ = new int[arity_]();
+		exclude();
 	}
 
 	IntTuple(const int* t, const size_t size) :arity_(size), cur_size_(size)
@@ -316,6 +317,7 @@ public:
 
 	const IntTuple& operator=(const IntTuple& rhs)
 	{
+		//if (arity_ != rhs.arity())
 		cur_size_ = rhs.cur_size_;
 		for (size_t i = 0; i < rhs.cur_size_; ++i)
 			tuple_[i] = rhs.tuple_[i];
@@ -453,6 +455,9 @@ public:
 
 	virtual void GetFirstValidTuple(IntVal& v_a, IntTuple&t);
 	virtual void GetNextValidTuple(IntVal& v_a, IntTuple&t);
+	virtual bool IsValidTuple(IntTuple&t);
+
+	size_t arity() const { return arity_; }
 
 	virtual ~Constraint() {}
 protected:
@@ -550,7 +555,11 @@ public:
 	arc get_arc() const { return arc(c_, v_); }
 	IntVal get_v_value() const { return IntVal(v_, a_); }
 
+	int get_var_index()const { return c_->index(v_); }
+
 	const IntConVal& operator=(const IntConVal& rhs);
+
+	int GetVarIndex() const;
 
 	friend std::ostream& operator<< (std::ostream &os, IntConVal &c_val)
 	{

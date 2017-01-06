@@ -168,7 +168,7 @@ bool IntVar::faild() const
 
 void Constraint::GetFirstValidTuple(IntVal & v_a, IntTuple & t)
 {
-	for (size_t i = 0; i < arity_; ++i)
+	for (size_t i = 0; i < arity(); ++i)
 		if (scope_[i] != v_a.v())
 			t[i] = scope_[i]->head();
 		else
@@ -177,7 +177,7 @@ void Constraint::GetFirstValidTuple(IntVal & v_a, IntTuple & t)
 
 void Constraint::GetNextValidTuple(IntVal& v_a, IntTuple&t)
 {
-	for (int i = arity_ - 1; i >= 0; --i)
+	for (int i = arity() - 1; i >= 0; --i)
 		if (scope_[i] != v_a.v())
 			if (scope_[i]->next(t[i]) == Limits::INDEX_OVERFLOW)
 				t[i] = scope_[i]->head();
@@ -190,11 +190,22 @@ void Constraint::GetNextValidTuple(IntVal& v_a, IntTuple&t)
 	t.exclude();
 }
 
+bool Constraint::IsValidTuple(IntTuple & t)
+{
+	if (!t.existed())
+		return false;
+
+	for (IntVar* v : scope_)
+		if (!v->have(t[index(v)]))
+			return false;
+	return true;
+}
+
 Tabular::Tabular(const int id, const std::vector<IntVar*>& scope, int **  ts, const int len) :
 	Constraint(id, scope, CT_EXT)
 {
 	for (int i = 0; i < len; ++i)
-		ts_ << IntTuple(ts[i], arity_);
+		ts_ << IntTuple(ts[i], arity());
 }
 
 bool Tabular::sat(IntTuple &t)
@@ -203,7 +214,10 @@ bool Tabular::sat(IntTuple &t)
 	//	for (int i = 0; i < arity_; ++i)
 	//		if (ts_[j][i] != scope_[i]->value[t[i]])
 	//			break;
-	return tuples().have(t);
+	if (t.existed())
+		return tuples().have(t);
+	else
+		return false;
 }
 
 Network::~Network()
@@ -277,6 +291,11 @@ const IntConVal& IntConVal::operator=(const IntConVal& rhs)
 	a_ = rhs.a_;
 
 	return *this;
+}
+
+int IntConVal::GetVarIndex() const
+{
+	return c_->index(v_);
 }
 
 std::ostream & operator<<(std::ostream & os, IntVal & v_val)

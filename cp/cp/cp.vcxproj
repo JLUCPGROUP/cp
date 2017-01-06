@@ -146,6 +146,7 @@
   <ItemGroup>
     <ClCompile Include="AC3.cpp" />
     <ClCompile Include="AC3bit.cpp" />
+    <ClCompile Include="AC3rm.cpp" />
     <ClCompile Include="CPAlgorithm.cpp" />
     <ClCompile Include="GAC.cpp" />
     <ClCompile Include="MAC.cpp" />
@@ -155,6 +156,7 @@
   <ItemGroup>
     <ClInclude Include="AC3.h" />
     <ClInclude Include="AC3bit.h" />
+    <ClInclude Include="AC3rm.h" />
     <ClInclude Include="CPAlgorithm.h" />
     <ClInclude Include="GAC.h" />
     <ClInclude Include="MAC.h" />
