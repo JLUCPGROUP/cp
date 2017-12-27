@@ -55,10 +55,10 @@ bitSup::bitSup(Network * nt) :
 			a[1] = ts[i][1];
 			//	¼ÇÂ¼a[0]
 			index = nt_->GetIntConValIndex(IntConVal(c, c->scope()[0], a[0]));
-			data_[index][a[0] / U64_BIT_SIZE] |= MASK1_64[a[1] % U64_BIT_SIZE];
-			//	¼ÇÂ¼a[0]
+			data_[index][a[1] / U64_BIT_SIZE] |= MASK1_64[a[1] % U64_BIT_SIZE];
+			//	¼ÇÂ¼a[1]
 			index = nt_->GetIntConValIndex(IntConVal(c, c->scope()[1], a[1]));
-			data_[index][a[1] / U64_BIT_SIZE] |= MASK1_64[a[0] % U64_BIT_SIZE];
+			data_[index][a[0] / U64_BIT_SIZE] |= MASK1_64[a[0] % U64_BIT_SIZE];
 		}
 	}
 }

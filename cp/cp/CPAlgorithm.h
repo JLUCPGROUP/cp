@@ -4,8 +4,7 @@
 #include "Model.h"
 #include "pro_que.h"
 
-namespace cp
-{
+namespace cp {
 
 //class VarEvt
 //{
@@ -31,13 +30,11 @@ namespace cp
 //	std::vector<unsigned> sig_;
 //};
 
-enum ACAlgorithm
-{
+enum ACAlgorithm {
 	AC_1, AC_2, AC_3, AC_4, AC_6, AC_7, AC_2001, AC_3bit, AC_3rm, STR_1, STR_2, STR_3
 };
 
-class VarEvt
-{
+class VarEvt {
 public:
 	VarEvt(Network* nt_);
 	virtual ~VarEvt();
@@ -55,8 +52,7 @@ private:
 };
 
 template<class T>
-class LinkedNode
-{
+class LinkedNode {
 public:
 	int prev;
 	T data;
@@ -65,8 +61,7 @@ public:
 };
 
 template<class T>
-class VarList
-{
+class VarList {
 public:
 	VarList(Network* nt_);
 	virtual ~VarList();
@@ -92,8 +87,7 @@ protected:
 	int top_;
 };
 
-class arc_que
-{
+class arc_que {
 public:
 #define  have(a) vid_set_[a.c_id() * arity_ + a.c()->index(a.v())]
 	arc_que() {}
@@ -116,8 +110,7 @@ private:
 	int m_rear_;
 };
 
-class AssignedStack
-{
+class AssignedStack {
 public:
 	AssignedStack(Network *nt);
 	virtual ~AssignedStack();
@@ -142,22 +135,21 @@ private:
 };
 
 
-class AC
-{
+class AC {
 public:
 	AC() {}
 	AC(Network *nt) : nt_(nt) {}
 	virtual ~AC() {}
 	virtual bool EnforceGAC_arc(VarEvt* x_evt, const int level = 0) = 0;
 
-	int DeletedCount()
-	{
+	int DeletedCount() {
 		int count = 0;
 		for (IntVar* v : nt_->vars_)
 			count += (v->capacity() - v->size());
 		return count;
 	}
 
+	int del() const { return delete_count; }
 
 	int lvl() const { return lvl_; }
 	void lvl(int val) { lvl_ = val; }
