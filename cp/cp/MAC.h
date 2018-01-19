@@ -6,18 +6,21 @@
 #include "AC3rm.h"
 namespace cp
 {
-
+enum VarHeu {
+	DOM, DOM_WDEG
+};
 class MAC
 {
 public:
-	MAC(Network *nt, ACAlgorithm ac_algzm);
-	void enforce();
+	MAC(Network *nt, ACAlgorithm ac_algzm, VarHeu h);
+	void enforce(const int time_limits);
 	virtual ~MAC();
 	int sol_count() const { return sol_count_; }
 	void sol_count(int val) { sol_count_ = val; }
 
 private:
 	int sol_count_ = 0;
+	VarHeu h_;
 	Network *nt_;
 	AC* ac_;
 	VarEvt* x_evt_;

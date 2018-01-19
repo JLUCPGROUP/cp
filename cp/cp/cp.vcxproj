@@ -162,6 +162,7 @@
     <ClInclude Include="MAC.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="pro_que.h" />
+    <ClInclude Include="Timer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

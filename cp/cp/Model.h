@@ -8,11 +8,9 @@
 #include <iostream>
 #include <math.h>
 
-namespace cp
-{
+namespace cp {
 
-namespace Limits
-{
+namespace Limits {
 /**
 * \brief 取值范围
 */
@@ -28,8 +26,7 @@ const int PRESENT = -1;
 const int ABSENT = 0;
 }
 
-namespace DomPresentation
-{
+namespace DomPresentation {
 const int DP_BINARY = 0x1;
 const int DP_TAILING = 0x2;
 const int DP_SPARSESET = 0x4;
@@ -98,29 +95,25 @@ const u64 MASK0_64[64] = {
 	0xFFFFFFFFFFFFFFF7, 0xFFFFFFFFFFFFFFFB, 0xFFFFFFFFFFFFFFFD, 0xFFFFFFFFFFFFFFFE,
 };
 
-inline int GetTopNum(int dividend, int divisor)
-{
+inline int GetTopNum(int dividend, int divisor) {
 	return (dividend + (divisor - 1)) / divisor;
 }
 
-enum IntVariableType
-{
+enum IntVariableType {
 	CONTI_ZERO,
 	CONTI_NON_ZERO,
 	DES_ZERO,
 	DER_NON_ZERO
 };
 
-enum ConstraintType
-{
+enum ConstraintType {
 	CT_EXT,
 	CT_INT,
 	CT_SOFT,
 	CT_AD
 };
 
-class Base
-{
+class Base {
 public:
 	Base() {}
 	Base(const int id) : id_(id) {}
@@ -132,8 +125,7 @@ private:
 
 class Constraint;
 class IntVal;
-class bitPre
-{
+class bitPre {
 public:
 	bitPre() {}
 	bitPre(const int size);
@@ -147,8 +139,7 @@ public:
 	u64* bitDom;
 };
 
-class IntVar :public Base
-{
+class IntVar :public Base {
 public:
 	IntVar() {};
 	IntVar(const int id) :Base(id) {}
@@ -184,6 +175,7 @@ public:
 	//void bpresent(cp::bitPre * val) { b_ = val; }
 	//int propagated() const { return propagated_; }
 	//void propagated(int val) { propagated_ = val; }
+	std::vector<Constraint* > cs_;
 protected:
 	int* vals_;
 
@@ -203,7 +195,6 @@ protected:
 	int* ptr_;
 	int lmt_;
 	int stamp_;
-	std::vector<Constraint* > cs_;
 
 	bitPre *b_;
 
@@ -220,36 +211,30 @@ protected:
 //	int bitDom;
 //};
 
-class IntTuple
-{
+class IntTuple {
 public:
 	IntTuple() {}
-	IntTuple(const size_t size) :arity_(size), cur_size_(size)
-	{
+	IntTuple(const size_t size) :arity_(size), cur_size_(size) {
 		tuple_ = new int[arity_]();
 		exclude();
 	}
 
-	IntTuple(const int* t, const size_t size) :arity_(size), cur_size_(size)
-	{
+	IntTuple(const int* t, const size_t size) :arity_(size), cur_size_(size) {
 		tuple_ = new int[arity_];
 
 		for (size_t i = 0; i < size; ++i)
 			tuple_[i] = t[i];
 	}
 
-	IntTuple(const IntTuple& rhs) :arity_(rhs.arity_), cur_size_(rhs.arity_)
-	{
+	IntTuple(const IntTuple& rhs) :arity_(rhs.arity_), cur_size_(rhs.arity_) {
 		tuple_ = new int[arity_];
 
 		for (size_t i = 0; i < arity_; ++i)
 			tuple_[i] = rhs.tuple_[i];
 	}
 
-	void reserve(const int size)
-	{
-		if (arity_ == 0)
-		{
+	void reserve(const int size) {
+		if (arity_ == 0) {
 			tuple_ = new int[size];
 			arity_ = size;
 			cur_size_ = size;
@@ -258,20 +243,16 @@ public:
 			cur_size_ = size;
 	}
 
-	void resize(const int size)
-	{
+	void resize(const int size) {
 		cur_size_ = size;
 	}
 
-	int& operator[](const int i) const
-	{
+	int& operator[](const int i) const {
 		return tuple_[i];
 	}
 
-	bool operator==(const IntTuple& rhs) const
-	{
-		if (cur_size_ == rhs.cur_size_)
-		{
+	bool operator==(const IntTuple& rhs) const {
+		if (cur_size_ == rhs.cur_size_) {
 			for (size_t i = 0; i < cur_size_; ++i)
 				if (tuple_[i] != rhs.tuple_[i])
 					return false;
@@ -282,8 +263,7 @@ public:
 			return false;
 	}
 
-	bool operator!=(const IntTuple& rhs) const
-	{
+	bool operator!=(const IntTuple& rhs) const {
 		if (cur_size_ != rhs.cur_size_)
 			return false;
 		else
@@ -293,8 +273,7 @@ public:
 		return true;
 	}
 
-	bool operator<(const IntTuple& rhs) const
-	{
+	bool operator<(const IntTuple& rhs) const {
 		for (size_t i = 0; i < cur_size_; ++i)
 			if (tuple_[i] > rhs.tuple_[i])
 				return false;
@@ -304,8 +283,7 @@ public:
 		return false;
 	}
 
-	bool operator>(const IntTuple& rhs) const
-	{
+	bool operator>(const IntTuple& rhs) const {
 		for (size_t i = 0; i < cur_size_; ++i)
 			if (tuple_[i] < rhs.tuple_[i])
 				return false;
@@ -315,8 +293,7 @@ public:
 		return false;
 	}
 
-	const IntTuple& operator=(const IntTuple& rhs)
-	{
+	const IntTuple& operator=(const IntTuple& rhs) {
 		//if (arity_ != rhs.arity())
 		cur_size_ = rhs.cur_size_;
 		for (size_t i = 0; i < rhs.cur_size_; ++i)
@@ -325,29 +302,24 @@ public:
 		return *this;
 	}
 
-	virtual ~IntTuple()
-	{
+	virtual ~IntTuple() {
 		delete[] tuple_;
 		tuple_ = NULL;
 	}
 
-	size_t arity() const
-	{
+	size_t arity() const {
 		return arity_;
 	}
 
-	size_t size() const
-	{
+	size_t size() const {
 		return cur_size_;
 	}
 
-	bool existed()
-	{
+	bool existed() {
 		return tuple_[0] != INT_MAX;
 	}
 
-	void exclude()
-	{
+	void exclude() {
 		tuple_[0] = INT_MAX;
 	}
 
@@ -358,8 +330,7 @@ private:
 };
 
 struct CmpFun
-	:public std::binary_function < IntTuple, IntTuple, bool>
-{
+	:public std::binary_function < IntTuple, IntTuple, bool> {
 	bool operator()(const IntTuple &lhs, const IntTuple &rhs) const  //这里如果没有const，程序还是能运行
 	{
 		std::cout << lhs[0] << ", " << lhs[1] << ":" << rhs[0] << ", " << rhs[1] << "=" << (lhs < rhs) << std::endl;
@@ -368,41 +339,34 @@ struct CmpFun
 
 };
 
-class IntTupleArray
-{
+class IntTupleArray {
 public:
 	IntTupleArray() {}
 
-	int arity() const
-	{
+	int arity() const {
 		if (size() != 0)
 			return tuples_[0].size();
 		else
 			return 0;
 	}
 
-	IntTuple& operator[](const int i)
-	{
+	IntTuple& operator[](const int i) {
 		return tuples_[i];
 	}
 
-	void operator<<(const IntTuple& rhs)
-	{
+	void operator<<(const IntTuple& rhs) {
 		add(rhs);
 	}
 
-	void add(const IntTuple& t)
-	{
+	void add(const IntTuple& t) {
 		tuples_.push_back(IntTuple(t));
 	}
 
-	size_t size() const
-	{
+	size_t size() const {
 		return tuples_.size();
 	}
 
-	virtual bool have(IntTuple& t)const
-	{
+	virtual bool have(IntTuple& t)const {
 		//需要二分支搜索
 		for (size_t i = 0; i < tuples_.size(); ++i)
 			if (tuples_[i] == t)
@@ -418,8 +382,7 @@ private:
 	std::vector<IntTuple> tuples_;
 };
 
-class Constraint :public Base
-{
+class Constraint :public Base {
 public:
 	Constraint() {}
 	Constraint(const int id) :Base(id) {}
@@ -430,13 +393,11 @@ public:
 		arity_(scope.size()) {}
 	virtual bool sat(IntTuple &t) = 0;
 
-	std::vector<IntVar *>& scope()
-	{
+	std::vector<IntVar *>& scope() {
 		return scope_;
 	}
 
-	int index(IntVar* v) const
-	{
+	int index(IntVar* v) const {
 		for (int i = scope_.size() - 1; i >= 0; --i)
 			if (scope_[i] == v)
 				return i;
@@ -444,8 +405,7 @@ public:
 		return -1;
 	}
 
-	int index(const int v_id) const
-	{
+	int index(const int v_id) const {
 		for (int i = scope_.size() - 1; i >= 0; --i)
 			if (scope_[i]->id() == v_id)
 				return i;
@@ -456,7 +416,7 @@ public:
 	virtual void GetFirstValidTuple(IntVal& v_a, IntTuple&t);
 	virtual void GetNextValidTuple(IntVal& v_a, IntTuple&t);
 	virtual bool IsValidTuple(IntTuple&t);
-
+	double weight = 0.0;
 	size_t arity() const { return arity_; }
 
 	virtual ~Constraint() {}
@@ -466,8 +426,7 @@ protected:
 	ConstraintType type_;
 };
 
-class Tabular :public Constraint
-{
+class Tabular :public Constraint {
 public:
 	Tabular() {}
 	Tabular(const int id, const std::vector<IntVar *>& scope, int**  ts, const int len);
@@ -479,8 +438,7 @@ private:
 	IntTupleArray ts_;
 };
 
-class arc
-{
+class arc {
 public:
 	arc() {}
 	arc(Constraint* c, IntVar* v) :c_(c), v_(v) {}
@@ -492,16 +450,14 @@ public:
 	int c_id() const { return c_->id(); }
 	int v_id() const { return v_->id(); }
 
-	const arc& operator=(arc& rhs)
-	{
+	const arc& operator=(arc& rhs) {
 		c_ = rhs.c_;
 		v_ = rhs.v_;
 
 		return *this;
 	}
 
-	friend std::ostream& operator<< (std::ostream &os, arc &c_x)
-	{
+	friend std::ostream& operator<< (std::ostream &os, arc &c_x) {
 		os << "(" << c_x.c_->id() << ", " << c_x.v_->id() << ")";
 		return os;
 	}
@@ -513,8 +469,7 @@ private:
 	IntVar* v_;
 };
 
-class IntVal
-{
+class IntVal {
 public:
 	IntVal() {}
 	IntVal(IntVar *v, const int a) :v_(v), a_(a) {}
@@ -532,8 +487,7 @@ private:
 	int a_;
 };
 
-class IntConVal
-{
+class IntConVal {
 public:
 	IntConVal() {}
 	IntConVal(Constraint* c, IntVar *v, const  int a) : c_(c), v_(v), a_(a) {}
@@ -561,8 +515,7 @@ public:
 
 	int GetVarIndex() const;
 
-	friend std::ostream& operator<< (std::ostream &os, IntConVal &c_val)
-	{
+	friend std::ostream& operator<< (std::ostream &os, IntConVal &c_val) {
 		os << "(" << c_val.c_->id() << ", " << c_val.v_->id() << ", " << c_val.a_ << ")";
 		return os;
 	}
@@ -573,8 +526,7 @@ private:
 	int a_;
 };
 
-class Network
-{
+class Network {
 public:
 	Network() {}
 	//Network(const int max_arity) :max_arity_(max_arity) {}
