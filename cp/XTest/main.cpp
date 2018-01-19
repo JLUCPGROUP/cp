@@ -14,9 +14,11 @@ using namespace cp::model;
 using namespace cp::parse;
 const string X_PATH = "BMPath.xml";
 
-int main() {
+int main()
+{
+	clock_t  begin, end;
 	XMLBuilder path_builder(X_PATH, XRT_BM_PATH);
-	const string bm_path = path_builder.GetBMFile();
+	string bm_path = path_builder.GetBMFile();
 	cout << bm_path << endl;
 	XMLBuilder builder(bm_path, XRT_BM);
 	XMLModel* xml_model = new XMLModel();
@@ -24,23 +26,25 @@ int main() {
 	Network* nt = new Network();
 	BuildModel(xml_model, nt);
 	DestroyEXTModel(xml_model);
-	//AC3bit* ac = new AC3bit(nt);
-	//VarEvt* x_evt_ = new VarEvt(nt);
+	AC3* ac = new AC3(nt);
+	VarEvt* x_evt_ = new VarEvt(nt);
 	//AC3rm* ac = new AC3rm(nt);
-	//ac->EnforceGAC_arc(x_evt_);
+	long t = clock_t();
+	ac->EnforceGAC_arc(x_evt_);
+	long t2 = clock_t();
+	cout << t2 - t << endl;
 	//MAC* mac = new MAC(nt, AC_3);
 	//MAC* mac = new MAC(nt, AC_3bit);
-	MAC* mac = new MAC(nt, AC_3bit, DOM);
-	const clock_t begin = clock();
-	mac->enforce();
-	const clock_t end = clock();
+	//MAC* mac = new MAC(nt, AC_3rm);
+	//begin = clock();
+	//mac->enforce();
+	//end = clock();
 	//cout << "solutions = " << mac->sol_count() << endl;
-	cout << "execute time = " << end - begin << endl;
-	//delete x_evt_;
-	//delete ac;
-	delete mac;
+	//cout << "execute time = " << end - begin << endl;
+	delete x_evt_;
+	delete ac;
+	//delete mac;
 	delete nt;
-	//delete xml_model;
 	//mac = NULL;
 	//x_evt_ = NULL;
 	//ac = NULL;

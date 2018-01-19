@@ -16,6 +16,7 @@ AC3::~AC3() {
 bool AC3::EnforceGAC_arc(VarEvt* x_evt, const int level) {
 	lvl(level);
 	delete_count = 0;
+	arc c_x;
 
 	for (int i = 0; i < x_evt->size(); ++i)
 		for (Constraint* c : x_evt->at(i)->subscribe())
@@ -29,7 +30,7 @@ bool AC3::EnforceGAC_arc(VarEvt* x_evt, const int level) {
 	//			Q.push(arc(c, v));
 
 	while (!Q.empty()) {
-		arc c_x = Q.pop();
+		c_x = Q.pop();
 		//std::cout << "--" << c_x << std::endl;
 
 		if (revise(c_x)) {
@@ -48,13 +49,13 @@ bool AC3::EnforceGAC_arc(VarEvt* x_evt, const int level) {
 }
 
 bool AC3::revise(arc & c_x) {
-	const int num_elements = c_x.v()->size();
+	int num_elements = c_x.v()->size();
 	int a = c_x.v()->head();
 
 	while (a != Limits::INDEX_OVERFLOW) {
 		if (!seek_support(IntConVal(c_x, a))) {
 			c_x.v()->RemoveValue(a, lvl_);
-			//std::cout << "(" << c_x.v_id() << ", " << a << ")" << std::endl;
+			std::cout << "(" << c_x.v_id() << ", " << a << ")" << std::endl;
 			++delete_count;
 		}
 		a = c_x.v()->next(a);
@@ -68,12 +69,11 @@ bool AC3::seek_support(IntConVal & c_val) {
 	//std::cout << "c-value" << c_val << std::endl;
 	while (cur_tp_.existed()) {
 		//std::cout << "tuple: " << cur_tp_[0] << "," << cur_tp_[1] << std::endl;
-		if (static_cast<Tabular*>(c_val.c())->sat(cur_tp_))
+		if (((Tabular*)c_val.c())->sat(cur_tp_))
 			return true;
 		else
 			nt_->GetNextValidTuple(c_val, cur_tp_);
 	}
-
 	return false;
 }
 
